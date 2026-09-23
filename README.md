@@ -1,0 +1,1 @@
+# How-to-Improve-SfDataGrid-Performance-for-Large-Datasets-with-Conditional-Styling
