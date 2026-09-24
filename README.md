@@ -19,7 +19,6 @@ SfDataGrid_Demo/
 ├── App.xaml.cs                           # Application code-behind
 ├── MainWindow.xaml                       # Main UI with SfDataGrid, 100+ styled columns, and status bar
 ├── MainWindow.xaml.cs                    # Data generation, sort comparer setup, and scroll timing logic
-├── RecordInfo.cs                         # Record info support
 ├── ViewModel.cs                          # ViewModel with INotifyPropertyChanged for MVVM binding
 ├── Converters/
 │   ├── FinancialConverters.cs            # 40+ financial value and styling converters + FinancialComparer
