@@ -1,0 +1,627 @@
+﻿<Window x:Class="SfDataGrid_Demo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+        xmlns:data="clr-namespace:Syncfusion.Data;assembly=Syncfusion.Data.WPF"
+        xmlns:local="clr-namespace:SfDataGrid_Demo"
+        mc:Ignorable="d"
+        Title="Enhanced SfDataGrid Demo" Height="600" Width="1200" >
+    <Window.DataContext>
+        <local:ViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.Resources>
+            <!-- All 43 Financial Converters -->
+            <local:PercentageConverter x:Key="PercentageConverter"/>
+            <local:DecimalConverter x:Key="DecimalConverter"/>
+            <local:PriceConverter x:Key="PriceConverter"/>
+            <local:VolatilityConverter x:Key="VolatilityConverter"/>
+            <local:BasisPointsConverter x:Key="BasisPointsConverter"/>
+            <local:YieldConverter x:Key="YieldConverter"/>
+            <local:SpreadConverter x:Key="SpreadConverter"/>
+            <local:TicksConverter x:Key="TicksConverter"/>
+            <local:QuantityConverter x:Key="QuantityConverter"/>
+            <local:NotionalValueConverter x:Key="NotionalValueConverter"/>
+            <local:PriceMoveForegroundConverter x:Key="PriceMoveForegroundConverter"/>
+            <local:PercentageChangeForegroundConverter x:Key="PercentageChangeForegroundConverter"/>
+            <local:RiskForegroundConverter x:Key="RiskForegroundConverter"/>
+            <local:BidAskForegroundConverter x:Key="BidAskForegroundConverter"/>
+            <local:VolatilityTrendForegroundConverter x:Key="VolatilityTrendForegroundConverter"/>
+            <local:StatusForegroundConverter x:Key="StatusForegroundConverter"/>
+            <local:ExecutionStatusForegroundConverter x:Key="ExecutionStatusForegroundConverter"/>
+            <local:LiquidityForegroundConverter x:Key="LiquidityForegroundConverter"/>
+            <local:CorrelationForegroundConverter x:Key="CorrelationForegroundConverter"/>
+            <local:PriceAlertBackgroundConverter x:Key="PriceAlertBackgroundConverter"/>
+            <local:VolatilityAlertBackgroundConverter x:Key="VolatilityAlertBackgroundConverter"/>
+            <local:LimitExceededBackgroundConverter x:Key="LimitExceededBackgroundConverter"/>
+            <local:ThresholdWarningBackgroundConverter x:Key="ThresholdWarningBackgroundConverter"/>
+            <local:ErrorStateBackgroundConverter x:Key="ErrorStateBackgroundConverter"/>
+            <local:HighValueBackgroundConverter x:Key="HighValueBackgroundConverter"/>
+            <local:NegativeValueBackgroundConverter x:Key="NegativeValueBackgroundConverter"/>
+            <local:OutOfRangeBackgroundConverter x:Key="OutOfRangeBackgroundConverter"/>
+            <local:AnomalyDetectionBackgroundConverter x:Key="AnomalyDetectionBackgroundConverter"/>
+            <local:HighPriorityFontWeightConverter x:Key="HighPriorityFontWeightConverter"/>
+            <local:ImportanceWeightConverter x:Key="ImportanceWeightConverter"/>
+            <local:CriticalValueFontWeightConverter x:Key="CriticalValueFontWeightConverter"/>
+            <local:ExecStatusFontWeightConverter x:Key="ExecStatusFontWeightConverter"/>
+            <local:ActiveSessionFontWeightConverter x:Key="ActiveSessionFontWeightConverter"/>
+            <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <local:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter"/>
+            <local:TextTransformConverter x:Key="TextTransformConverter"/>
+            <local:OpacityConverter x:Key="OpacityConverter"/>
+            <local:TimestampConverter x:Key="TimestampConverter"/>
+            <local:DateFormatConverter x:Key="DateFormatConverter"/>
+            <local:DurationConverter x:Key="DurationConverter"/>
+            <local:TooltipConverter x:Key="TooltipConverter"/>
+            <local:CurrencySymbolConverter x:Key="CurrencySymbolConverter"/>
+            <local:RowBackgroundStyleConverter x:Key="RowBackgroundStyleConverter"/>
+            <local:ValueChangeForegroundConverter x:Key="ValueChangeForegroundConverter"/>
+            <local:AlternateRowStyleConverter x:Key="AlternateRowStyleConverter"/>
+            <local:FinancialComparer x:Key="FinancialComparer" />
+            <!-- Cell Styles -->
+            <Style x:Key="GridCellStyle" TargetType="syncfusion:GridCell">
+                <Setter Property="Padding" Value="5,2"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="HeaderCellStyle" TargetType="syncfusion:GridHeaderCellControl">
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Background" Value="#E0E0E0"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="Padding" Value="5,8"/>
+            </Style>
+
+            <Style x:Key="EditableCellStyle" TargetType="syncfusion:GridCell" BasedOn="{StaticResource GridCellStyle}">
+                <Setter Property="Background" Value="#FFFACD"/>
+                <Style.Triggers>
+                    <Trigger Property="IsFocused"  Value="True">
+                        <Setter Property="Background" Value="#87CEEB"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="DataCellStyle" TargetType="syncfusion:GridCell" BasedOn="{StaticResource GridCellStyle}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsSelected}" Value="True">
+                        <Setter Property="Background" Value="#ADD8E6"/>
+                        <Setter Property="Foreground" Value="#000080"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- Row Styles -->
+            <Style x:Key="RowStyle" TargetType="syncfusion:VirtualizingCellsControl">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderThickness" Value="0,1,0,0"/>
+                <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            </Style>
+
+            <Style x:Key="AlternatingRowStyle" TargetType="syncfusion:VirtualizingCellsControl">
+                <Setter Property="Background" Value="#F5F5F5"/>
+                <Setter Property="BorderThickness" Value="0,1,0,0"/>
+                <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            </Style>
+        </Grid.Resources>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header/Status Bar -->
+        <StackPanel Grid.Row="0" Background="#F0F0F0" >
+            <TextBlock Text="Enhanced Performance Demo: 2000 Rows | 200 Columns | 80 Converters" 
+                       FontWeight="Bold" FontSize="13" Margin="0,0,0,5"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="StatusText" Text="Loading data..." Foreground="#666666" Grid.Column="0"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- DataGrid with Advanced Configuration -->
+        <syncfusion:SfDataGrid x:Name="dataGrid"
+                       Grid.Row="1" 
+                       AllowFiltering="True"
+                       AllowSorting="True"
+                       AllowEditing="True"
+                       AutoGenerateColumns="False"
+                       SelectionMode="Extended"
+                       SelectionUnit="Row"
+                       ItemsSource="{Binding Rows}"
+                       HeaderRowHeight="60"
+                       RowHeight="25"
+                       FrozenColumnCount="1"
+                       EditTrigger="OnTap"
+                       AllowDraggingColumns="True"
+                       AllowResizingColumns="True"
+                      >
+            <syncfusion:SfDataGrid.SortComparers>
+                <data:SortComparer Comparer="{StaticResource FinancialComparer}" PropertyName="AskPrice" />
+            </syncfusion:SfDataGrid.SortComparers>
+            <!-- DataGrid Styles -->
+            <syncfusion:SfDataGrid.Style>
+                <Style TargetType="{x:Type syncfusion:SfDataGrid}">
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="#CCCCCC"/>
+                </Style>
+            </syncfusion:SfDataGrid.Style>
+
+            <!-- Row Styling -->
+            <syncfusion:SfDataGrid.RowStyle>
+                <Style TargetType="syncfusion:VirtualizingCellsControl" BasedOn="{StaticResource RowStyle}">
+                    <Setter Property="FontWeight">
+                        <Setter.Value>
+                            <Binding Path="RowIndex" Converter="{StaticResource ValueChangeForegroundConverter}" Mode="OneWay" />
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsVIP, Mode=OneWay}" Value="True">
+                            <Setter Property="Background" Value="#FFFFE0" />
+                            <Setter Property="BorderBrush" Value="#FFD700" />
+                            <Setter Property="BorderThickness" Value="2,1,1,1" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </syncfusion:SfDataGrid.RowStyle>
+
+            <!-- Alternating Row Styling -->
+            <syncfusion:SfDataGrid.AlternatingRowStyle>
+                <Style TargetType="syncfusion:VirtualizingCellsControl" BasedOn="{StaticResource AlternatingRowStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsVIP, Mode=OneWay}" Value="True">
+                            <Setter Property="Background" Value="#FFFACD" />
+                            <Setter Property="BorderBrush" Value="#FFD700" />
+                            <Setter Property="BorderThickness" Value="2,1,1,1" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </syncfusion:SfDataGrid.AlternatingRowStyle>
+
+            <!-- Financial Columns with 80+ Converters -->
+            <syncfusion:SfDataGrid.Columns>
+                <!-- Cols 1-10: Text-formatting converters (DisplayBinding) -->
+                <syncfusion:GridTextColumn HeaderText="Col 1: Pct" MappingName="ImpliedVolatility" Width="60" DisplayBinding="{Binding ImpliedVolatility, Converter={StaticResource PercentageConverter}}" >
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding PnL, Converter={StaticResource PriceMoveForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 2: Decimal" MappingName="Delta" Width="60" DisplayBinding="{Binding Delta, Converter={StaticResource DecimalConverter}}" >
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding AskPrice, Converter={StaticResource PriceAlertBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 3: Price" MappingName="BidPrice" Width="60" DisplayBinding="{Binding BidPrice, Converter={StaticResource PriceConverter}}" >
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding PnL, Converter={StaticResource PriceMoveForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 4: Volatility" MappingName="HistoricalVolatility" Width="60" DisplayBinding="{Binding HistoricalVolatility, Converter={StaticResource VolatilityConverter}}" >
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding AskPrice, Converter={StaticResource PriceAlertBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 5: BPS" MappingName="SpreadBps" Width="60" DisplayBinding="{Binding SpreadBps, Converter={StaticResource BasisPointsConverter}}" >
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding SpreadBps, Converter={StaticResource PriceMoveForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 6: Yield" MappingName="YearsToExpiry" Width="60" DisplayBinding="{Binding YearsToExpiry, Converter={StaticResource YieldConverter}}" >
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 7: Spread" MappingName="Spread" Width="60" DisplayBinding="{Binding Spread, Converter={StaticResource SpreadConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 8: Ticks" MappingName="BidDepth" Width="60" DisplayBinding="{Binding BidDepth, Converter={StaticResource TicksConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 9: Qty" MappingName="Volume" Width="60" DisplayBinding="{Binding Volume, Converter={StaticResource QuantityConverter}}" >
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding Volume, Converter={StaticResource PriceAlertBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 10: Notional" MappingName="Exposure" Width="60" DisplayBinding="{Binding Exposure, Converter={StaticResource NotionalValueConverter}}" />
+
+                <!-- Cols 11-19: Foreground color converters (CellStyle + Binding) -->
+                <syncfusion:GridTextColumn HeaderText="Col 11: PnL Fg" MappingName="PnL" Width="60" DisplayBinding="{Binding PnL, Converter={StaticResource PriceConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding PnL, Converter={StaticResource PriceMoveForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 12: VolTrend Fg" MappingName="ImpliedVolatility" Width="60" DisplayBinding="{Binding ImpliedVolatility, Converter={StaticResource PercentageConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding VolatilityShift, Converter={StaticResource VolatilityTrendForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 13: Risk Fg" MappingName="VaR" Width="60" DisplayBinding="{Binding VaR, Converter={StaticResource NotionalValueConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding VaR, Converter={StaticResource RiskForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 14: Status Fg" MappingName="ExecutionStatus" Width="60" DisplayBinding="{Binding ExecutionStatus, Converter={StaticResource TextTransformConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding State, Converter={StaticResource StatusForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 15: ExecStatus Fg" MappingName="ExecutionStatus" Width="60" DisplayBinding="{Binding ExecutionStatus, Converter={StaticResource TextTransformConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding ExecutionStatus, Converter={StaticResource ExecutionStatusForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 16: Liquidity Fg" MappingName="LiquidityScore" Width="60" DisplayBinding="{Binding LiquidityScore, Converter={StaticResource PercentageConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding LiquidityScore, Converter={StaticResource LiquidityForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 17: Corr Fg" MappingName="Correlation" Width="60" DisplayBinding="{Binding Correlation, Converter={StaticResource DecimalConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding Correlation, Converter={StaticResource CorrelationForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 18: PctChange Fg" MappingName="DailyPnL" Width="60" DisplayBinding="{Binding DailyPnL, Converter={StaticResource CurrencySymbolConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding DailyPnL, Converter={StaticResource PercentageChangeForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 19: BidAsk Fg" MappingName="BidPrice" Width="60" DisplayBinding="{Binding BidPrice, Converter={StaticResource PriceConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding OptionType, Converter={StaticResource BidAskForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+
+                <!-- Cols 20-28: Background color converters (CellStyle) -->
+                <syncfusion:GridTextColumn HeaderText="Col 20: PriceAlert Bg" MappingName="AskPrice" Width="60" DisplayBinding="{Binding AskPrice, Converter={StaticResource PriceConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding AskPrice, Converter={StaticResource PriceAlertBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 21: VolAlert Bg" MappingName="BidVolatility" Width="60" DisplayBinding="{Binding BidVolatility, Converter={StaticResource VolatilityConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding BidVolatility, Converter={StaticResource VolatilityAlertBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 22: LimitExceeded Bg" MappingName="LimitExceeded" Width="60">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding LimitExceeded, Converter={StaticResource LimitExceededBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 23: ThresholdWarn Bg" MappingName="UsedRiskLimit" Width="60" DisplayBinding="{Binding UsedRiskLimit, Converter={StaticResource PercentageConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding UsedRiskLimit, Converter={StaticResource ThresholdWarningBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 24: ErrorState Bg" MappingName="State" Width="60">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding State, Converter={StaticResource ErrorStateBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 25: HighValue Bg" MappingName="AccountingValue" Width="60" DisplayBinding="{Binding AccountingValue, Converter={StaticResource CurrencySymbolConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding AccountingValue, Converter={StaticResource HighValueBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 26: NegativeValue Bg" MappingName="AccruedPnL" Width="60" DisplayBinding="{Binding AccruedPnL, Converter={StaticResource CurrencySymbolConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding AccruedPnL, Converter={StaticResource NegativeValueBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 27: OutOfRange Bg" MappingName="Skewness" Width="60" DisplayBinding="{Binding Skewness, Converter={StaticResource DecimalConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding Skewness, Converter={StaticResource OutOfRangeBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 28: Anomaly Bg" MappingName="IsAnomalous" Width="60">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding IsAnomalous, Converter={StaticResource AnomalyDetectionBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+
+                <!-- Cols 29-33: Font weight converters (CellStyle) -->
+                <syncfusion:GridTextColumn HeaderText="Col 29: HighPriority FW" MappingName="PnL" Width="60" DisplayBinding="{Binding PnL, Converter={StaticResource CurrencySymbolConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="FontWeight" Value="{Binding PnL, Converter={StaticResource HighPriorityFontWeightConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 30: Importance FW" MappingName="BidDepth" Width="60" DisplayBinding="{Binding BidDepth, Converter={StaticResource TicksConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="FontWeight" Value="{Binding BidDepth, Converter={StaticResource ImportanceWeightConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 31: CriticalValue FW" MappingName="Theta" Width="60" DisplayBinding="{Binding Theta, Converter={StaticResource DecimalConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="FontWeight" Value="{Binding Theta, Converter={StaticResource CriticalValueFontWeightConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 32: ExecStatus FW" MappingName="ExecutionStatus" Width="60" DisplayBinding="{Binding ExecutionStatus, Converter={StaticResource TextTransformConverter}}">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="FontWeight" Value="{Binding ExecutionStatus, Converter={StaticResource ExecStatusFontWeightConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 33: ActiveSession FW" MappingName="IsVIP" Width="60">
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="FontWeight" Value="{Binding IsVIP, Converter={StaticResource ActiveSessionFontWeightConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+
+                <!-- Cols 34-43: Visibility & other formatters (mixed) -->
+                <syncfusion:GridTextColumn HeaderText="Col 34: NullVis" MappingName="HedgeStatus" Width="60">
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridCheckBoxColumn HeaderText="Col 35: BoolVis" MappingName="IsLiquidInstrument" Width="60">
+                    <syncfusion:GridCheckBoxColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding Path=IsLiquidInstrument, Converter={StaticResource BoolToVisibilityConverter}}" />
+                        </Style>
+                    </syncfusion:GridCheckBoxColumn.CellStyle>
+                </syncfusion:GridCheckBoxColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 36: ZeroVis" MappingName="ExecutedQuantity" Width="60" DisplayBinding="{Binding ExecutedQuantity, Converter={StaticResource QuantityConverter}}">
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 37: TextTransform" MappingName="AlertFlag" Width="60" DisplayBinding="{Binding AlertFlag, Converter={StaticResource TextTransformConverter}}" >
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding AskPrice, Converter={StaticResource PriceAlertBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridDateTimeColumn HeaderText="Col 38: Timestamp" MappingName="UpdateTime" Width="80" DisplayBinding="{Binding UpdateTime, Converter={StaticResource TimestampConverter}}" >
+                    <syncfusion:GridDateTimeColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding AskPrice, Converter={StaticResource PriceAlertBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridDateTimeColumn.CellStyle>
+                </syncfusion:GridDateTimeColumn>
+                <syncfusion:GridDateTimeColumn HeaderText="Col 39: DateFormat" MappingName="ExpiryDate" Width="80" DisplayBinding="{Binding ExpiryDate, Converter={StaticResource DateFormatConverter}}" >
+                    <syncfusion:GridDateTimeColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding AskPrice, Converter={StaticResource PriceAlertBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridDateTimeColumn.CellStyle>
+                </syncfusion:GridDateTimeColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 40: Duration" MappingName="TradingDaysRemaining" Width="70" DisplayBinding="{Binding TradingDaysRemaining, Converter={StaticResource DurationConverter}}" >
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding AskPrice, Converter={StaticResource PriceAlertBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 41: Tooltip" MappingName="Kurtosis" Width="60" DisplayBinding="{Binding Kurtosis, Converter={StaticResource TooltipConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 42: Currency" MappingName="CommissionPaid" Width="70" DisplayBinding="{Binding CommissionPaid, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 43: Opacity" MappingName="DataQualityScore" Width="60" DisplayBinding="{Binding DataQualityScore, Converter={StaticResource PercentageConverter}}" />
+                <!-- Cols 44-200: Repeat converters cyclically -->
+                <syncfusion:GridTextColumn x:Name="SymbolColumn" HeaderText="Col 44: Symbol (Sort ③)" MappingName="Symbol" Width="80" DisplayBinding="{Binding Symbol, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 45" MappingName="Underlying" Width="60" DisplayBinding="{Binding Underlying, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 46" MappingName="BidPrice" Width="60" DisplayBinding="{Binding BidPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 47" MappingName="AskPrice" Width="60" DisplayBinding="{Binding AskPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 48" MappingName="LastPrice" Width="60" DisplayBinding="{Binding LastPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 49" MappingName="TheoreticalPrice" Width="60" DisplayBinding="{Binding TheoreticalPrice, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 50" MappingName="Spread" Width="60" DisplayBinding="{Binding Spread, Converter={StaticResource SpreadConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 51" MappingName="MidPrice" Width="60" DisplayBinding="{Binding MidPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 52" MappingName="BidVolatility" Width="60" DisplayBinding="{Binding BidVolatility, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 53" MappingName="AskVolatility" Width="60" DisplayBinding="{Binding AskVolatility, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 54" MappingName="ImpliedVolatility" Width="60" DisplayBinding="{Binding ImpliedVolatility, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 55" MappingName="HistoricalVolatility" Width="60" DisplayBinding="{Binding HistoricalVolatility, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 56" MappingName="Delta" Width="60" DisplayBinding="{Binding Delta, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 57" MappingName="Gamma" Width="60" DisplayBinding="{Binding Gamma, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 58" MappingName="Theta" Width="60" DisplayBinding="{Binding Theta, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 59" MappingName="Vega" Width="60" DisplayBinding="{Binding Vega, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 60" MappingName="Rho" Width="60" DisplayBinding="{Binding Rho, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 61" MappingName="PnL" Width="60" DisplayBinding="{Binding PnL, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 62" MappingName="DailyPnL" Width="60" DisplayBinding="{Binding DailyPnL, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 63" MappingName="Exposure" Width="60" DisplayBinding="{Binding Exposure, Converter={StaticResource NotionalValueConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 64" MappingName="VaR" Width="60" DisplayBinding="{Binding VaR, Converter={StaticResource NotionalValueConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 65" MappingName="LiquidityScore" Width="60" DisplayBinding="{Binding LiquidityScore, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 66" MappingName="Correlation" Width="60" DisplayBinding="{Binding Correlation, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 67" MappingName="BetaFactor" Width="60" DisplayBinding="{Binding BetaFactor, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn x:Name="DaysToExpiryColumn" HeaderText="Col 68: Expiry Days (Sort ①)" MappingName="DaysToExpiry" Width="90" DisplayBinding="{Binding DaysToExpiry, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 69" MappingName="TimeDecay" Width="60" DisplayBinding="{Binding TimeDecay, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 70" MappingName="ExecutionStatus" Width="60" DisplayBinding="{Binding ExecutionStatus, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 71" MappingName="DataQualityScore" Width="60" DisplayBinding="{Binding DataQualityScore, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 72" MappingName="BidPrice" Width="60" DisplayBinding="{Binding BidPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 73" MappingName="AskPrice" Width="60" DisplayBinding="{Binding AskPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn x:Name="LastPriceColumn" HeaderText="Col 74: Last Price (Sort ②)" MappingName="LastPrice" Width="90" DisplayBinding="{Binding LastPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 75" MappingName="Spread" Width="60" DisplayBinding="{Binding Spread, Converter={StaticResource SpreadConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 76" MappingName="MidPrice" Width="60" DisplayBinding="{Binding MidPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 77" MappingName="BidQuantity" Width="60" DisplayBinding="{Binding BidQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 78" MappingName="AskQuantity" Width="60" DisplayBinding="{Binding AskQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 79" MappingName="OpenInterest" Width="60" DisplayBinding="{Binding OpenInterest, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 80" MappingName="ExecutedQuantity" Width="60" DisplayBinding="{Binding ExecutedQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 81" MappingName="Volume" Width="60" DisplayBinding="{Binding Volume, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 82" MappingName="VolatilityShift" Width="60" DisplayBinding="{Binding VolatilityShift, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 83" MappingName="BidVolatility" Width="60" DisplayBinding="{Binding BidVolatility, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 84" MappingName="AskVolatility" Width="60" DisplayBinding="{Binding AskVolatility, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 85" MappingName="ImpliedVolatility" Width="60" DisplayBinding="{Binding ImpliedVolatility, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 86" MappingName="HistoricalVolatility" Width="60" DisplayBinding="{Binding HistoricalVolatility, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 87" MappingName="Delta" Width="60" DisplayBinding="{Binding Delta, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 88" MappingName="Gamma" Width="60" DisplayBinding="{Binding Gamma, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 89" MappingName="Theta" Width="60" DisplayBinding="{Binding Theta, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 90" MappingName="Vega" Width="60" DisplayBinding="{Binding Vega, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 91" MappingName="Rho" Width="60" DisplayBinding="{Binding Rho, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 92" MappingName="PnL" Width="60" DisplayBinding="{Binding PnL, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 93" MappingName="DailyPnL" Width="60" DisplayBinding="{Binding DailyPnL, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 94" MappingName="Exposure" Width="60" DisplayBinding="{Binding Exposure, Converter={StaticResource NotionalValueConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 95" MappingName="VaR" Width="60" DisplayBinding="{Binding VaR, Converter={StaticResource NotionalValueConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 96" MappingName="LiquidityScore" Width="60" DisplayBinding="{Binding LiquidityScore, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 97" MappingName="Correlation" Width="60" DisplayBinding="{Binding Correlation, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 98" MappingName="BetaFactor" Width="60" DisplayBinding="{Binding BetaFactor, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 99" MappingName="DaysToExpiry" Width="60" DisplayBinding="{Binding DaysToExpiry, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 100" MappingName="TimeDecay" Width="60" DisplayBinding="{Binding TimeDecay, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 101" MappingName="Symbol" Width="60" DisplayBinding="{Binding Symbol, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 102" MappingName="Underlying" Width="60" DisplayBinding="{Binding Underlying, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 103" MappingName="BidPrice" Width="60" DisplayBinding="{Binding BidPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 104" MappingName="AskPrice" Width="60" DisplayBinding="{Binding AskPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 105" MappingName="LastPrice" Width="60" DisplayBinding="{Binding LastPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 106" MappingName="Spread" Width="60" DisplayBinding="{Binding Spread, Converter={StaticResource SpreadConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 107" MappingName="MidPrice" Width="60" DisplayBinding="{Binding MidPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 108" MappingName="BidQuantity" Width="60" DisplayBinding="{Binding BidQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 109" MappingName="AskQuantity" Width="60" DisplayBinding="{Binding AskQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 110" MappingName="OpenInterest" Width="60" DisplayBinding="{Binding OpenInterest, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 111" MappingName="ExecutedQuantity" Width="60" DisplayBinding="{Binding ExecutedQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 112" MappingName="Volume" Width="60" DisplayBinding="{Binding Volume, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 113" MappingName="VolatilityShift" Width="60" DisplayBinding="{Binding VolatilityShift, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 114" MappingName="BidVolatility" Width="60" DisplayBinding="{Binding BidVolatility, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 115" MappingName="AskVolatility" Width="60" DisplayBinding="{Binding AskVolatility, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 116" MappingName="ImpliedVolatility" Width="60" DisplayBinding="{Binding ImpliedVolatility, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 117" MappingName="HistoricalVolatility" Width="60" DisplayBinding="{Binding HistoricalVolatility, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 118" MappingName="Delta" Width="60" DisplayBinding="{Binding Delta, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 119" MappingName="Gamma" Width="60" DisplayBinding="{Binding Gamma, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 120" MappingName="Theta" Width="60" DisplayBinding="{Binding Theta, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 121" MappingName="Vega" Width="60" DisplayBinding="{Binding Vega, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 122" MappingName="Rho" Width="60" DisplayBinding="{Binding Rho, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 123" MappingName="PnL" Width="60" DisplayBinding="{Binding PnL, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 124" MappingName="DailyPnL" Width="60" DisplayBinding="{Binding DailyPnL, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 125" MappingName="Exposure" Width="60" DisplayBinding="{Binding Exposure, Converter={StaticResource NotionalValueConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 126" MappingName="VaR" Width="60" DisplayBinding="{Binding VaR, Converter={StaticResource NotionalValueConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 127" MappingName="LiquidityScore" Width="60" DisplayBinding="{Binding LiquidityScore, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 128" MappingName="Correlation" Width="60" DisplayBinding="{Binding Correlation, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 129" MappingName="BetaFactor" Width="60" DisplayBinding="{Binding BetaFactor, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 130" MappingName="DaysToExpiry" Width="60" DisplayBinding="{Binding DaysToExpiry, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 131" MappingName="TimeDecay" Width="60" DisplayBinding="{Binding TimeDecay, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 132" MappingName="ExecutionStatus" Width="60" DisplayBinding="{Binding ExecutionStatus, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 133" MappingName="DataQualityScore" Width="60" DisplayBinding="{Binding DataQualityScore, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 134" MappingName="Symbol" Width="60" DisplayBinding="{Binding Symbol, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 135" MappingName="Underlying" Width="60" DisplayBinding="{Binding Underlying, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 136" MappingName="BidPrice" Width="60" DisplayBinding="{Binding BidPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 137" MappingName="AskPrice" Width="60" DisplayBinding="{Binding AskPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 138" MappingName="LastPrice" Width="60" DisplayBinding="{Binding LastPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 139" MappingName="Spread" Width="60" DisplayBinding="{Binding Spread, Converter={StaticResource SpreadConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 140" MappingName="MidPrice" Width="60" DisplayBinding="{Binding MidPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 141" MappingName="BidQuantity" Width="60" DisplayBinding="{Binding BidQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 142" MappingName="AskQuantity" Width="60" DisplayBinding="{Binding AskQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 143" MappingName="OpenInterest" Width="60" DisplayBinding="{Binding OpenInterest, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 144" MappingName="ExecutedQuantity" Width="60" DisplayBinding="{Binding ExecutedQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 145" MappingName="Volume" Width="60" DisplayBinding="{Binding Volume, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 146" MappingName="VolatilityShift" Width="60" DisplayBinding="{Binding VolatilityShift, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 147" MappingName="BidVolatility" Width="60" DisplayBinding="{Binding BidVolatility, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 148" MappingName="AskVolatility" Width="60" DisplayBinding="{Binding AskVolatility, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 149" MappingName="ImpliedVolatility" Width="60" DisplayBinding="{Binding ImpliedVolatility, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 150" MappingName="HistoricalVolatility" Width="60" DisplayBinding="{Binding HistoricalVolatility, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 151" MappingName="Delta" Width="60" DisplayBinding="{Binding Delta, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 152" MappingName="Gamma" Width="60" DisplayBinding="{Binding Gamma, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 153" MappingName="Theta" Width="60" DisplayBinding="{Binding Theta, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 154" MappingName="Vega" Width="60" DisplayBinding="{Binding Vega, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 155" MappingName="Rho" Width="60" DisplayBinding="{Binding Rho, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 156" MappingName="PnL" Width="60" DisplayBinding="{Binding PnL, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 157" MappingName="DailyPnL" Width="60" DisplayBinding="{Binding DailyPnL, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 158" MappingName="Exposure" Width="60" DisplayBinding="{Binding Exposure, Converter={StaticResource NotionalValueConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 159" MappingName="VaR" Width="60" DisplayBinding="{Binding VaR, Converter={StaticResource NotionalValueConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 160" MappingName="LiquidityScore" Width="60" DisplayBinding="{Binding LiquidityScore, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 161" MappingName="Correlation" Width="60" DisplayBinding="{Binding Correlation, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 162" MappingName="BetaFactor" Width="60" DisplayBinding="{Binding BetaFactor, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 163" MappingName="DaysToExpiry" Width="60" DisplayBinding="{Binding DaysToExpiry, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 164" MappingName="TimeDecay" Width="60" DisplayBinding="{Binding TimeDecay, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 165" MappingName="ExecutionStatus" Width="60" DisplayBinding="{Binding ExecutionStatus, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 166" MappingName="DataQualityScore" Width="60" DisplayBinding="{Binding DataQualityScore, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 167" MappingName="Symbol" Width="60" DisplayBinding="{Binding Symbol, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 168" MappingName="Underlying" Width="60" DisplayBinding="{Binding Underlying, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 169" MappingName="BidPrice" Width="60" DisplayBinding="{Binding BidPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 170" MappingName="AskPrice" Width="60" DisplayBinding="{Binding AskPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 171" MappingName="LastPrice" Width="60" DisplayBinding="{Binding LastPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 172" MappingName="Spread" Width="60" DisplayBinding="{Binding Spread, Converter={StaticResource SpreadConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 173" MappingName="MidPrice" Width="60" DisplayBinding="{Binding MidPrice, Converter={StaticResource PriceConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 174" MappingName="BidQuantity" Width="60" DisplayBinding="{Binding BidQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 175" MappingName="AskQuantity" Width="60" DisplayBinding="{Binding AskQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 176" MappingName="OpenInterest" Width="60" DisplayBinding="{Binding OpenInterest, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 177" MappingName="ExecutedQuantity" Width="60" DisplayBinding="{Binding ExecutedQuantity, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 178" MappingName="Volume" Width="60" DisplayBinding="{Binding Volume, Converter={StaticResource QuantityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 179" MappingName="VolatilityShift" Width="60" DisplayBinding="{Binding VolatilityShift, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 180" MappingName="BidVolatility" Width="60" DisplayBinding="{Binding BidVolatility, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 181" MappingName="AskVolatility" Width="60" DisplayBinding="{Binding AskVolatility, Converter={StaticResource VolatilityConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 182" MappingName="ImpliedVolatility" Width="60" DisplayBinding="{Binding ImpliedVolatility, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 183" MappingName="HistoricalVolatility" Width="60" DisplayBinding="{Binding HistoricalVolatility, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 184" MappingName="Delta" Width="60" DisplayBinding="{Binding Delta, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 185" MappingName="Gamma" Width="60" DisplayBinding="{Binding Gamma, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 186" MappingName="Theta" Width="60" DisplayBinding="{Binding Theta, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 187" MappingName="Vega" Width="60" DisplayBinding="{Binding Vega, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 188" MappingName="Rho" Width="60" DisplayBinding="{Binding Rho, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 189" MappingName="PnL" Width="60" DisplayBinding="{Binding PnL, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 190" MappingName="DailyPnL" Width="60" DisplayBinding="{Binding DailyPnL, Converter={StaticResource CurrencySymbolConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 191" MappingName="Exposure" Width="60" DisplayBinding="{Binding Exposure, Converter={StaticResource NotionalValueConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 192" MappingName="VaR" Width="60" DisplayBinding="{Binding VaR, Converter={StaticResource NotionalValueConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 193" MappingName="LiquidityScore" Width="60" DisplayBinding="{Binding LiquidityScore, Converter={StaticResource PercentageConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 194" MappingName="Correlation" Width="60" DisplayBinding="{Binding Correlation, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 195" MappingName="BetaFactor" Width="60" DisplayBinding="{Binding BetaFactor, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 196" MappingName="DaysToExpiry" Width="60" DisplayBinding="{Binding DaysToExpiry, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 197" MappingName="TimeDecay" Width="60" DisplayBinding="{Binding TimeDecay, Converter={StaticResource DecimalConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 198" MappingName="ExecutionStatus" Width="60" DisplayBinding="{Binding ExecutionStatus, Converter={StaticResource TextTransformConverter}}" />
+                <syncfusion:GridTextColumn HeaderText="Col 199" MappingName="DataQualityScore" Width="60" DisplayBinding="{Binding DataQualityScore, Converter={StaticResource PercentageConverter}}" >
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Foreground" Value="{Binding VaR, Converter={StaticResource RiskForegroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+                <syncfusion:GridTextColumn HeaderText="Col 200: CurrencySymbol" MappingName="CommissionPaid" Width="70" DisplayBinding="{Binding CommissionPaid, Converter={StaticResource CurrencySymbolConverter}}" >
+                    <syncfusion:GridTextColumn.CellStyle>
+                        <Style TargetType="syncfusion:GridCell">
+                            <Setter Property="Background" Value="{Binding AskPrice, Converter={StaticResource PriceAlertBackgroundConverter}}" />
+                        </Style>
+                    </syncfusion:GridTextColumn.CellStyle>
+                </syncfusion:GridTextColumn>
+
+            </syncfusion:SfDataGrid.Columns>
+        </syncfusion:SfDataGrid>
+
+    </Grid>
+</Window>
