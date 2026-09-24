@@ -72,6 +72,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Comparer\FinancialComparer.cs" />
     <Compile Include="Converters\GenericValueConverter.cs" />
     <Compile Include="Converters\FinancialConverters.cs" />
     <Compile Include="MainWindow.xaml.cs">
